@@ -2,6 +2,20 @@
 
 =encoding utf8
 
+=for HTML <a href="https://www.github.com/briandfoy/module-release-verifygpgsignature/actions?query=workflow%3Amacos"><img src="https://www.github.com/briandfoy/module-release-verifygpgsignature/workflows/macos/badge.svg"></a>
+
+=for HTML <a href="https://www.github.com/briandfoy/module-release-verifygpgsignature/actions?query=workflow%3Aubuntu"><img src="https://www.github.com/briandfoy/module-release-verifygpgsignature/workflows/ubuntu/badge.svg"></a>
+
+=for HTML <a href="https://www.github.com/briandfoy/module-release-verifygpgsignature/actions?query=workflow%3Awindows"><img src="https://www.github.com/briandfoy/module-release-verifygpgsignature/workflows/windows/badge.svg"></a>
+
+=for HTML <a href='https://ci.appveyor.com/project/briandfoy/module-release-verifygpgsignature'><img src='https://ci.appveyor.com/api/projects/status/8ieweanxf0iwe9no?svg=true'></a>
+
+=for HTML <a href='https://coveralls.io/github/briandfoy/module-release-verifygpgsignature?branch=master'><img src='https://coveralls.io/repos/github/briandfoy/module-release-verifygpgsignature/badge.svg?branch=master' alt='Coverage Status' /></a>
+
+=for HTML <a href="https://github.com/briandfoy/module-release-verifygpgsignature/blob/master/LICENSE"><img src="https://img.shields.io/cpan/l/Module-Release-VerifyGPGSignature.svg" /></a>
+
+=for HTML <a href="https://metacpan.org/pod/Module::Release::VerifyGPGSignature"><img src="https://img.shields.io/cpan/v/Module-Release-VerifyGPGSignature.svg" /></A>
+
 =head1 The Module::Release::VerifyGPGSignature module
 
 This is the I<README> for the L<Module::Release::VerifyGPGSignature> Perl module.
