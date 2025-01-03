@@ -62,7 +62,7 @@ and verify that the signatures match.
 =cut
 
 sub check_all_gpg_signatures ( $self ) {
-	my $pairs = _get_file_pairs( $self );
+	my $pairs = $self->_get_file_pairs;
 	foreach my $pair ( $pairs->@* ) {
 		$self->check_gpg_signature( $pair->@* )
 		}
