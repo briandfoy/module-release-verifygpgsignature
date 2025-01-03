@@ -61,11 +61,8 @@ and verify that the signatures match.
 
 =cut
 
-use Mojo::Util qw(dumper);
-
 sub check_all_gpg_signatures ( $self ) {
 	my $pairs = _get_file_pairs( $self );
-	say STDERR dumper( $pairs );
 	foreach my $pair ( $pairs->@* ) {
 		$self->check_gpg_signature( $pair->@* )
 		}
