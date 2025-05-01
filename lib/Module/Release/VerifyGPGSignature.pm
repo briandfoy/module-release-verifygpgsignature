@@ -27,12 +27,14 @@ Module::Release::VerifyGPGSignature - Verify GPG signatures in the distro
 This requires several things.
 
 First, you must have F<gpgv> installed in F</usr/local/bin>. If there
-are other common, trusted, locations, I can add those.
+are other common, trusted, locations, I can add those. I developed
+this using gpg2. If you need to upgrade from gpg1, be careful with
+everything else you might disturb with gpg2's differences.
 
 Second, you must have your public key that was used to sign the file
-in the default keyring for F<gpgv>. This is not the same default keyring
-for F<gpg>. It's likely F<~/.gnupg/trustedkeys.kbx>. You can export your
-public key from your normal keyring into the new one:
+in the default keyring for F<gpgv>. This is not the same default
+keyring for F<gpg>. It's likely F<~/.gnupg/trustedkeys.kbx>. You can
+export your public key from your normal keyring into the new one:
 
 	% gpg --export KEY_DIGEST |
 		gpg --no-default-keyring --keyring ~/.gnupg/trustedkeys.kbx --import
