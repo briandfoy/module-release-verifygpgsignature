@@ -10,7 +10,7 @@ use Exporter qw(import);
 
 our @EXPORT = qw(check_all_gpg_signatures check_gpg_signature);
 
-our $VERSION = '0.002';
+our $VERSION = '0.004';
 
 =encoding utf8
 
@@ -24,11 +24,25 @@ Module::Release::VerifyGPGSignature - Verify GPG signatures in the distro
 
 =head1 DESCRIPTION
 
-Configure in F<.releaserc> as a list of pairs:
+This requires several things.
+
+First, you must have F<gpgv> installed in F</usr/local/bin>. If there
+are other common, trusted, locations, I can add those.
+
+Second, you must have your public key that was used to sign the file
+in the default keyring for F<gpgv>. This is not the same default keyring
+for F<gpg>. It's likely F<~/.gnupg/trustedkeys.kbx>. You can export your
+public key from your normal keyring into the new one:
+
+	% gpg --export KEY_DIGEST |
+		gpg --no-default-keyring --keyring ~/.gnupg/trustedkeys.kbx --import
+
+Then, list the file pairs to check in F<.releaserc>:
 
     gpg_signatures \
     	file.txt file.txt.gpg \
     	file2.txt file2.txt.gpg
+
 
 =over 4
 
@@ -76,7 +90,24 @@ Checks the PGP signature in SIGNATURE_FILE matches for FILE.
 =cut
 
 sub check_gpg_signature ( $self, $file, $signature_file ) {
+	state $gpgv_bin = '/usr/local/bin/gpgv';
+	state $bin_paths = qw(/usr/local/bin);
+
+	$self->_debug( "Looking for $gpgv_bin in (@$bin_paths)" );
+	my @paths = grep { -x -e } map { catfile $_, $gpgv_bin } $bin_paths->@*;
+
+	{
+	my $message = @paths ?
+		"Found gpgv in (@paths)"
+			:
+		"Did not find gpgv in one of (@$bin_paths)";
+	$self->_debug( $message );
+	}
+
 	$self->_print( "Checking GPG signature of <$file>...\n" );
+
+	$self->_die( "\nERROR: Could not find an executable gpgv in one of (@$bin_paths)\n" )
+		unless @paths;
 
 	$self->_die( "\nERROR: Could not verify signature of <$file>: file does not exist\n" )
 		unless -e $file;
@@ -84,15 +115,12 @@ sub check_gpg_signature ( $self, $file, $signature_file ) {
 	$self->_die( "\nERROR: Could not verify signature of <$file> with <$signature_file>: signature file does not exist\n" )
 		unless -e $signature_file;
 
-	my $result = $self->run( qq(gpg --verify "$signature_file" "$file" 2>&1) );
-	$result =~ s/^/    /mg;
-	$self->_print( "$result" );
+	my $rc = system $paths[0], $signature_file, $file;
+	my $result = $rc == 0 ? 'Good signature' : 'Bad signature';
+	$self->_debug( "Exit code of <$rc> for <$paths[0] $signature_file $file>" );
+	$self->_print( $result );
 
-	unless( $result =~ /\bGood signature from\b/ ) {
-		$self->_die( "\nERROR: signature verification failed" );
-		}
-
-	return 1;
+	return $rc == 0;
 	}
 
 =back
@@ -102,6 +130,13 @@ sub check_gpg_signature ( $self, $file, $signature_file ) {
 
 =head1 SEE ALSO
 
+=over 4
+
+=item * L<gpgv documentation|https://www.gnupg.org/documentation/manuals/gnupg/gpgv.html>
+
+=item * L<Stateless OpenPGP CLI standard|https://www.openpgp.org/about/sop/>
+
+=back
 
 =head1 SOURCE AVAILABILITY
 
@@ -111,11 +146,11 @@ This source is in Github:
 
 =head1 AUTHOR
 
-brian d foy, C<< <brian d foy> >>
+brian d foy, C<< <briandfoy@pobox.com> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2022, brian d foy, All Rights Reserved.
+Copyright © 2022-2025, brian d foy, All Rights Reserved.
 
 You may redistribute this under the terms of the Artistic License 2.0.
 
