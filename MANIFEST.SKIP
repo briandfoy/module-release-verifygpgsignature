@@ -93,3 +93,5 @@ nytprof
 \A\.github\b
 \A\.gitattributes\b
 cooker_report\.txt
+
+.downstream.json
